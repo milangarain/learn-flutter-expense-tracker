@@ -1,0 +1,46 @@
+import 'package:expense_tracker/models/expense.dart';
+import 'package:expense_tracker/widgets/chart/chart_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
+class Chart extends StatelessWidget {
+  Chart({super.key, required this.expenses});
+
+  final List<Expense> expenses;
+  var categoryExpense = {};
+  var maxExpenseAmount = 0.0;
+  // keySet<Category,[double]> pair;
+
+  // Category.values.forEach((category) {categoryExpense.put()})
+
+  @override
+  Widget build(BuildContext context) {
+    Category.values.forEach((element) {
+      categoryExpense[element] = 0.0;
+    });
+    expenses.forEach((element) {
+      categoryExpense[element.category] += element.amount;
+      if(maxExpenseAmount < element.amount) {
+        maxExpenseAmount = element.amount ;
+      }
+    });
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: Category.values
+          .map((category) => Expanded(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 150,
+                      child: ChartBar(
+                        height: categoryExpense[category]/maxExpenseAmount,
+                      ),
+                    ),
+                    Icon(categoryIcons[category]),
+                  ],
+                ),
+              ))
+          .toList(),
+    );
+  }
+}
